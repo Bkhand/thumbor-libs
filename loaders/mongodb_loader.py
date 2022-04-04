@@ -1,0 +1,45 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Blackhand library for Thumbor
+# Licensed under the GNU/GPL license:
+# https://fsf.org/
+
+# OFFLINE MITIG-
+
+from pymongo import MongoClient
+from bson.objectid import ObjectId
+import gridfs
+import urllib
+from thumbor.loaders import LoaderResult
+
+def __conn__(self):
+    the_database = self.config.MONGO_ORIGIN_SERVER_DB
+    if urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_USER):
+        password = urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_PASSWORD)
+        user = urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_USER)
+        uri = 'mongodb://'+ user +':' + password + '@' + self.config.MONGO_ORIGIN_SERVER_HOST + '/?authSource=' + self.config.MONGO_ORIGIN_SERVER_DB
+    else:
+        uri = 'mongodb://'+ self.config.MONGO_ORIGIN_SERVER_HOST
+    client = MongoClient(uri)
+    #database
+    db = client[self.config.MONGO_ORIGIN_SERVER_DB]
+    return db
+
+async def load(context, path):
+    db = __conn__(context)
+    words2 = path.split("/")
+    storage = context.config.MONGO_ORIGIN_SERVER_COLLECTION
+    images = gridfs.GridFS(db, collection=storage)
+    result = LoaderResult()
+    if ObjectId.is_valid(words2[0]):
+        if images.exists(ObjectId(words2[0])):
+            contents = images.get(ObjectId(words2[0])).read()
+            result.successful = True
+            result.buffer = contents
+        else:
+            result.error = LoaderResult.ERROR_NOT_FOUND
+            result.successful = False
+    else:
+        result.error = LoaderResult.ERROR_NOT_FOUND
+        result.successful = False
+    return result
