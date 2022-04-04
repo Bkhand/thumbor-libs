@@ -85,7 +85,7 @@ class Storage(BaseStorage):
                 )
                 doc_cpm['expire'] = ref
 
-        storage.insert(doc_cpm)
+        storage.insert_one(doc_cpm)
 
         return key
 
