@@ -16,7 +16,7 @@ setup(
     license = 'MIT',
     url = 'https://github.com/Bkhand/thumbor-libs',
     packages=[
-        'thumbor-_libs',
+        'thumbor-libs',
         'thumbor-libs.loaders',
         'thumbor-libs.url_signers',
         'thumbor-libs.metrics',
