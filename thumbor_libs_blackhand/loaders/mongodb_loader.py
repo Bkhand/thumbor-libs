@@ -6,23 +6,19 @@
 
 # OFFLINE MITIG-
 
-from pymongo import MongoClient
 from bson.objectid import ObjectId
 import gridfs
 import urllib
 from thumbor.loaders import LoaderResult
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 def __conn__(self):
-    the_database = self.config.MONGO_ORIGIN_SERVER_DB
-    if urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_USER):
-        password = urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_PASSWORD)
-        user = urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_USER)
-        uri = 'mongodb://'+ user +':' + password + '@' + self.config.MONGO_ORIGIN_SERVER_HOST + '/?authSource=' + self.config.MONGO_ORIGIN_SERVER_DB
-    else:
-        uri = 'mongodb://'+ self.config.MONGO_ORIGIN_SERVER_HOST
-    client = MongoClient(uri)
-    #database
-    db = client[self.config.MONGO_ORIGIN_SERVER_DB]
+
+    uri = urllib.parse.quote_plus(self.context.config.MONGO_ORIGIN_URI)
+    server_api = ServerApi('1', strict=True)
+    client = MongoClient(self.context.config.MONGO_ORIGIN_URI, server_api=server_api)        
+    db = client[sself.config.MONGO_ORIGIN_SERVER_DB]
     return db
 
 async def load(context, path):

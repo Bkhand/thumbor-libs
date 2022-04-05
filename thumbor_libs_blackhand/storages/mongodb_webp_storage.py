@@ -7,19 +7,17 @@ import gridfs
 import urllib.request, urllib.parse, urllib.error
 from datetime import datetime, timedelta
 from io import StringIO
-from pymongo import MongoClient
 from thumbor.storages import BaseStorage
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
+
+
 
 class Storage(BaseStorage):
 
     def __conn__(self):
-        password = urllib.parse.quote_plus(self.context.config.MONGO_STORAGE_SERVER_PASSWORD)
-        user = self.context.config.MONGO_STORAGE_SERVER_USER
-        if not self.context.config.MONGO_STORAGE_SERVER_REPLICASET:
-          uri = 'mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_STORAGE_SERVER_HOST + '/?authSource=' + self.context.config.MONGO_STORAGE_SERVER_DB
-        else:
-          uri = 'mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_STORAGE_SERVER_HOST + '/?authSource=' + self.context.config.MONGO_STORAGE_SERVER_DB + "&replicaSet=" + self.context.config.MONGO_STORAGE_SERVER_REPLICASET + "&readPreference=" + self.context.config.MONGO_STORAGE_SERVER_READ_PREFERENCE + "&maxStalenessSeconds=120"
-        client = MongoClient(uri)
+        server_api = ServerApi('1', strict=True)       
+        client = MongoClient(self.context.config.MONGO_STORAGE_URI, server_api=server_api)        
         db = client[self.context.config.MONGO_STORAGE_SERVER_DB]
         storage = db[self.context.config.MONGO_STORAGE_SERVER_COLLECTION]
         return client, db, storage
@@ -32,16 +30,14 @@ class Storage(BaseStorage):
             'created_at': datetime.utcnow()
         }
         doc_with_crypto = dict(doc)
-
         if self.context.config.STORES_CRYPTO_KEY_FOR_EACH_IMAGE:
             if not self.context.server.security_key:
                 raise RuntimeError("STORES_CRYPTO_KEY_FOR_EACH_IMAGE can't be True if no SECURITY_KEY specified")
             doc_with_crypto['crypto'] = self.context.server.security_key
-
         fs = gridfs.GridFS(db)
         file_data = fs.put(file_bytes, **doc)
         doc_with_crypto['file_id'] = file_data
-        storage.insert(doc_with_crypto)
+        storage.insert_one(doc_with_crypto)
         return  tpath
 
     async def put_crypto(self, path):
