@@ -4,27 +4,26 @@
 # Licensed under the GNU/GPL license:
 # https://fsf.org/
 
-# OFFLINE MITIG-
 
+from pymongo import MongoClient
 from bson.objectid import ObjectId
-import gridfs
-import urllib
 from thumbor.loaders import LoaderResult
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+import gridfs
+import urllib.request, urllib.parse, urllib.error
+#from thumbor.utils import logger
 
 def __conn__(self):
+    #server_api = ServerApi('1', strict=True)
+    client = MongoClient(self.config.MONGO_ORIGIN_URI)
+    #client = MongoClient(server_api=server_api)
+    db = client[self.config.MONGO_ORIGIN_SERVER_DB]
+    storage = self.config.MONGO_ORIGIN_SERVER_COLLECTION
+    return client, db, storage
 
-    uri = urllib.parse.quote_plus(self.context.config.MONGO_ORIGIN_URI)
-    server_api = ServerApi('1', strict=True)
-    client = MongoClient(self.context.config.MONGO_ORIGIN_URI, server_api=server_api)        
-    db = client[sself.config.MONGO_ORIGIN_SERVER_DB]
-    return db
 
 async def load(context, path):
-    db = __conn__(context)
+    client, db, storage = __conn__(context)
     words2 = path.split("/")
-    storage = context.config.MONGO_ORIGIN_SERVER_COLLECTION
     images = gridfs.GridFS(db, collection=storage)
     result = LoaderResult()
     if ObjectId.is_valid(words2[0]):
