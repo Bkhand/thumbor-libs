@@ -18,17 +18,17 @@ def __conn__(self):
     #client = MongoClient(server_api=server_api)
     db = client[self.config.MONGO_ORIGIN_SERVER_DB]
     storage = self.config.MONGO_ORIGIN_SERVER_COLLECTION
-    return client, db, storage
+    return db, storage
 
 
 async def load(context, path):
-    client, db, storage = __conn__(context)
-    words2 = path.split("/")
+    db, storage = __conn__(context)
+    correctPath = path.split("/")
     images = gridfs.GridFS(db, collection=storage)
     result = LoaderResult()
-    if ObjectId.is_valid(words2[0]):
-        if images.exists(ObjectId(words2[0])):
-            contents = images.get(ObjectId(words2[0])).read()
+    if ObjectId.is_valid(correctPath[0]):
+        if images.exists(ObjectId(correctPath[0])):
+            contents = images.get(ObjectId(correctPath[0])).read()
             result.successful = True
             result.buffer = contents
         else:
