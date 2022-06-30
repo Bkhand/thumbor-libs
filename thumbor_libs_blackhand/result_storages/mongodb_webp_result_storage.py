@@ -25,8 +25,8 @@ class Storage(BaseStorage):
     def __conn__(self):
         server_api = ServerApi('1', strict=True)
         client = MongoClient(self.context.config.MONGO_RESULT_STORAGE_URI, server_api=server_api)        
-        db = client[self.context.config.MONGO_RESULT_STORAGE_SERVER_DB]
-        storage = db[self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION]
+        db = client[self.context.config.MONGO_RESULT_STORAGE_DB]
+        storage = db[self.context.config.MONGO_RESULT_STORAGE_COLLECTION]
         return client, db, storage
 
 
@@ -103,13 +103,9 @@ class Storage(BaseStorage):
         if not result:
             return None
         
-        if result and  await self.__is_expired(result):
-            ttl = result.get('path')
-            await self.remove(ttl)
-            return None
-        tosend = result['data']        
+        tosend = result['data']
         return tosend
-
+        
 
     async def remove(self, path):
         connection, db, storage = self.__conn__()
@@ -123,13 +119,3 @@ class Storage(BaseStorage):
                 storage.remove({'path': path, "content-type": "default"})
             except:
                 pass
-
-
-    async def __is_expired(self, result):
-        timediff = datetime.utcnow() - result.get('created_at')
-        return timediff > timedelta(seconds=self.context.config.RESULT_STORAGE_EXPIRATION_SECONDS)
-        '''future => db.log_events.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 3600 } )
-        db.runCommand( { collMod: <collection or view>, <option1>: <value1>, <option2>: <value2> ... } )
-        {keyPattern: <index_spec> || name: <index_name>, expireAfterSeconds: <seconds> }
-        {getParameter:1, expireAfterSeconds: 1}
-        '''

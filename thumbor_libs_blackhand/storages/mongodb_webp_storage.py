@@ -18,8 +18,8 @@ class Storage(BaseStorage):
     def __conn__(self):
         server_api = ServerApi('1', strict=True)       
         client = MongoClient(self.context.config.MONGO_STORAGE_URI, server_api=server_api)        
-        db = client[self.context.config.MONGO_STORAGE_SERVER_DB]
-        storage = db[self.context.config.MONGO_STORAGE_SERVER_COLLECTION]
+        db = client[self.context.config.MONGO_STORAGE_DB]
+        storage = db[self.context.config.MONGO_STORAGE_COLLECTION]
         return client, db, storage
 
     async def put(self, path, file_bytes):
