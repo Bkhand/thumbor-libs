@@ -84,7 +84,7 @@ class Storage(BaseStorage):
         else:
             result = storage.find_one({"path": key, "content-type": "default"})
         
-        if not result: # or self.__is_expired(result):
+        if not result:
             return None
         
         if result and  await self.__is_expired(result):
@@ -117,5 +117,3 @@ class Storage(BaseStorage):
         {keyPattern: <index_spec> || name: <index_name>, expireAfterSeconds: <seconds> }
         {getParameter:1, expireAfterSeconds: 1}
         '''
-
-

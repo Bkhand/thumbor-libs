@@ -10,6 +10,7 @@ from os.path import join, exists, abspath
 from six.moves.urllib.parse import unquote
 from tornado.concurrent import return_future
 from thumbor.loaders import LoaderResult
+from thumbor.utils import logger
 
 
 async def load(context, path):
@@ -29,11 +30,9 @@ async def load(context, path):
         if not inside_root_path_two:
           result.error = LoaderResult.ERROR_NOT_FOUND
           result.successful = False
-          return result #callback(result)
-        pass #return
+          return result
+        pass
 
-    # keep backwards compatibility, try the actual path first
-    # if not found, unquote it and try again
     if not exists(file_path):
         file_path = unquote(file_path)
 
@@ -43,25 +42,34 @@ async def load(context, path):
     if exists(file_path):
         with open(file_path, 'r') as f:
             stats = fstat(f.fileno())
+            
+            if stats.st_size <= 4:
+                logger.warning(u"%s: cette image source est vide...", file_path)
+                result.successful = False
+                result.error = LoaderResult.ERROR_UPSTREAM
+            else:
+                result.successful = True
+                result.buffer = f.read()
 
-            result.successful = True
-            result.buffer = f.read()
-
-            result.metadata.update(
-                size=stats.st_size,
-                updated_at=datetime.utcfromtimestamp(stats.st_mtime))
+                result.metadata.update(
+                    size=stats.st_size,
+                    updated_at=datetime.utcfromtimestamp(stats.st_mtime))
+    
     elif exists(file_path_two):
          with open(file_path_two, 'r') as f:
             stats = fstat(f.fileno())
+            
+            if stats.st_size <= 4:
+                logger.warning(u"%s: cette image source est vide...", file_path_two)
+                result.successful = False
+                result.error = LoaderResult.ERROR_UPSTREAM
+            else:
+                result.successful = True
+                result.buffer = f.read()
 
-            result.successful = True
-            result.buffer = f.read()
-
-            result.metadata.update(
-                size=stats.st_size,
-                updated_at=datetime.utcfromtimestamp(stats.st_mtime))
-
-
+                result.metadata.update(
+                    size=stats.st_size,
+                    updated_at=datetime.utcfromtimestamp(stats.st_mtime))
     else:
         result.error = LoaderResult.ERROR_NOT_FOUND
         result.successful = False

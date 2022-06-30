@@ -4,7 +4,7 @@
 # Licensed under the GNU/GPL license:
 # https://fsf.org/
 
-# OFFLINE
+# OFFLINE => DEPRECATED
 
 import urllib
 from thumbor.loaders import http_loader
