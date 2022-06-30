@@ -4,9 +4,6 @@
 # Licensed under the GNU/GPL license:
 # https://fsf.org/
 
-# OFFLINE
-
-#from thumbor.loaders import file_loader, http_loader
 from thumbor.loaders import http_loader
 from thumbor_ftvnum_libs.loaders import pic_nn_loader
 from tornado.concurrent import return_future
