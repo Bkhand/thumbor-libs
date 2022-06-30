@@ -42,7 +42,7 @@ class Storage(BaseStorage):
 
     async def put_crypto(self, path):
         if not self.context.config.STORES_CRYPTO_KEY_FOR_EACH_IMAGE:
-            pass #return
+            pass
         tpath = self.truepath(path)
         connection, db, storage = self.__conn__()
         pasplit = path.split("/")

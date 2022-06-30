@@ -3,9 +3,9 @@
 # Licensed under the GNU/GPL license:
 # https://fsf.org/
 import bson
-import re
 import time
 import urllib.request, urllib.parse, urllib.error
+from re import findall
 from datetime import datetime, timedelta
 from io import StringIO
 from thumbor.result_storages import BaseStorage
@@ -13,6 +13,7 @@ from thumbor.utils import logger
 from bson.binary import Binary
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+from sys import getsizeof
 
 
 class Storage(BaseStorage):
@@ -65,6 +66,21 @@ class Storage(BaseStorage):
             'ref_id': ref_img2
             }
         doc_cpm = dict(doc)
+
+        try:
+            self.context.config.MONGO_RESULT_STORAGE_MAXCACHESIZE
+            maxs = self.context.config.MONGO_RESULT_STORAGE_MAXCACHESIZE
+        except:
+            maxs = 16000000
+
+        amd = getsizeof(bytes)
+        if  amd > maxs:
+            logger.warning(u"OVERSIZE %s: %s > %s pas de mise en cache possible", key, amd, maxs)
+            return None
+        else:
+            storage.insert(doc_cpm)
+            return key
+
         if result_ttl > 0:
                 ref = datetime.utcnow() + timedelta(
                     seconds=result_ttl
@@ -84,7 +100,7 @@ class Storage(BaseStorage):
         else:
             result = storage.find_one({"path": key, "content-type": "default"})
         
-        if not result: # or self.__is_expired(result):
+        if not result:
             return None
         
         if result and  await self.__is_expired(result):
@@ -117,5 +133,3 @@ class Storage(BaseStorage):
         {keyPattern: <index_spec> || name: <index_name>, expireAfterSeconds: <seconds> }
         {getParameter:1, expireAfterSeconds: 1}
         '''
-
-
