@@ -20,10 +20,10 @@ class Storage(BaseStorage):
         client = MongoClient(self.context.config.MONGO_STORAGE_URI, server_api=server_api)        
         db = client[self.context.config.MONGO_STORAGE_DB]
         storage = db[self.context.config.MONGO_STORAGE_COLLECTION]
-        return client, db, storage
+        return db, storage
 
     async def put(self, path, file_bytes):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         tpath = self.truepath(path)
         doc = {
             'path': tpath,
@@ -37,27 +37,27 @@ class Storage(BaseStorage):
         fs = gridfs.GridFS(db)
         file_data = fs.put(file_bytes, **doc)
         doc_with_crypto['file_id'] = file_data
-        storage.insert_one(doc_with_crypto)
+        db.storage.insert_one(doc_with_crypto)
         return  tpath
 
     async def put_crypto(self, path):
         if not self.context.config.STORES_CRYPTO_KEY_FOR_EACH_IMAGE:
             pass
         tpath = self.truepath(path)
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         pasplit = path.split("/")
         if not self.context.server.security_key:
             raise RuntimeError("STORES_CRYPTO_KEY_FOR_EACH_IMAGE can't be True if no SECURITY_KEY specified")
         crypto = storage.find_one({'path': tpath})
         crypto['crypto'] = self.context.server.security_key
-        storage.update({'path': tpath}, crypto)
+        db.storage.update({'path': tpath}, crypto)
         return pasplit[0]
 
     async def put_detector_data(self, path, data):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         tpath = self.truepath(path)
         pasplit = path.split("/")
-        storage.update({'path': tpath}, {"$set": {"detector_data": data}})
+        db.storage.update({'path': tpath}, {"$set": {"detector_data": data}})
         return pasplit[0]
 
     def truepath(self, path):
@@ -71,29 +71,29 @@ class Storage(BaseStorage):
             return False
 
     def get_crypto(self, path):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         tpath = self.truepath(path)
         pasplit = path.split("/")
-        crypto = storage.find_one({'path': tpath})
+        crypto = db.storage.find_one({'path': tpath})
         if crypto:
             return crypto.get('crypto')
         else:
             return None
 
     async def get_detector_data(self, path):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         pasplit = path.split("/")
         tpath = self.truepath(path)
-        doc = storage.find_one({'path': tpath})
+        doc = db.storage.find_one({'path': tpath})
         if doc:
             return doc.get('detector_data')
         else:
             return None
 
     async def get(self, path):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         tpath = self.truepath(path)
-        stored = storage.find_one({'path': tpath})
+        stored = db.storage.find_one({'path': tpath})
         if not stored:
             return None
         # if self.__is_expired(stored):
@@ -104,28 +104,28 @@ class Storage(BaseStorage):
         return bytes(contents)
 
     async def exists(self, path):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         tpath = self.truepath(path)
-        stored = storage.find_one({'path': tpath})
+        #stored = db.storage.find_one({'path': tpath})
         if tpath:
-            stored = storage.find_one({'path': tpath})
+            stored = db.storage.find_one({'path': tpath})
+            if not stored or self.__is_expired(stored):
+                return False
+            else:
+                return True 
         else:
             return False
-        if not stored or self.__is_expired(stored):
-            return False
-        else:
-            return True
 
     def remove(self, path):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         tpath = self.truepath(path)
         if not self.exists(tpath):
             pass
         fs = gridfs.GridFS(db)
-        stored = storage.find_one({'path': tpath})
+        stored = db.storage.find_one({'path': tpath})
         try:
             fs.delete(stored['file_id'])
-            storage.remove({'path': tpath })
+            db.storage.remove({'path': tpath })
         except:
             pass
 
