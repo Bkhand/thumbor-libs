@@ -13,8 +13,8 @@ import urllib.request, urllib.parse, urllib.error
 #from thumbor.utils import logger
 
 def __conn__(self):
-    server_api_mode = ServerApi('1', strict=True)
-    client = MongoClient(self.config.MONGO_ORIGIN_URI,server_api=server_api_mode)
+    #server_api_mode = ServerApi('1', strict=True)
+    client = MongoClient(self.config.MONGO_ORIGIN_URI)  #,server_api=server_api_mode)
     db = client[self.config.MONGO_ORIGIN_SERVER_DB]
     storage = self.config.MONGO_ORIGIN_SERVER_COLLECTION
     return db, storage
