@@ -2,7 +2,7 @@
 Libs for thumbor 7+
 
 ## Table of Contents
-1. [General purposes] (#General)
+1. [General](#General)
 2. [Loaders](#Loaders)
 3. [Storages](#Storages)
 4. [Result_storages](#Result_storages)
