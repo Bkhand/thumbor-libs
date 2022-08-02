@@ -5,7 +5,7 @@
 import bson
 import time
 import urllib.request, urllib.parse, urllib.error
-from re import findall
+import re
 from datetime import datetime, timedelta
 from io import StringIO
 from thumbor.result_storages import BaseStorage
@@ -23,11 +23,11 @@ class Storage(BaseStorage):
 
 
     def __conn__(self):
-        server_api = ServerApi('1', strict=True)
-        client = MongoClient(self.context.config.MONGO_RESULT_STORAGE_URI, server_api=server_api)        
+        #server_api = ServerApi('1', strict=True)
+        client = MongoClient(self.context.config.MONGO_RESULT_STORAGE_URI) #, server_api=server_api)
         db = client[self.context.config.MONGO_RESULT_STORAGE_SERVER_DB]
-        storage = db[self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION]
-        return client, db, storage
+        storage = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
+        return db, storage
 
 
     def get_max_age(self):
@@ -43,17 +43,18 @@ class Storage(BaseStorage):
 
 
     async def put(self, image_bytes):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         key = self.get_key_from_request()
         max_age = self.get_max_age()
         result_ttl = self.get_max_age()
         ref_img = ''
         ref_img = re.findall(r'/[a-zA-Z0-9]{24}(?:$|/)', key)
+        #coll = db.storage
         if ref_img:
             ref_img2 = ref_img[0].replace('/','')
         else:
             ref_img2 = 'undef'
-        
+
         if self.is_auto_webp:
             content_t = 'webp'
         else:
@@ -78,7 +79,7 @@ class Storage(BaseStorage):
             logger.warning(u"OVERSIZE %s: %s > %s pas de mise en cache possible", key, amd, maxs)
             return None
         else:
-            storage.insert(doc_cpm)
+            db.storage.insert_one(doc_cpm)
             return key
 
         if result_ttl > 0:
@@ -86,50 +87,56 @@ class Storage(BaseStorage):
                     seconds=result_ttl
                 )
                 doc_cpm['expire'] = ref
-        storage.insert_one(doc_cpm)
+        db.storage.insert_one(doc_cpm)
         return key
 
 
     async def get(self):
-        connection, db, storage = self.__conn__()
+        db, storage = self.__conn__()
         key = self.get_key_from_request()
         logger.debug("[RESULT_STORAGE] image not found at %s", key)
-        
+
+        with open('/tmp/debug.txt', 'w') as f:
+            print(key, file=f)
+
+
+
         if self.is_auto_webp:
-            result = storage.find_one({"path": key, "content-type": "webp"})
+            result = db.storage.find_one({'path': key }) #, 'content-type': "webp"})
         else:
-            result = storage.find_one({"path": key, "content-type": "default"})
-        
+            result = db.storage.find_one({'path': key }) #, 'content-type': "default"})
+
         if not result:
             return None
-        
-        if result and  await self.__is_expired(result):
-            ttl = result.get('path')
-            await self.remove(ttl)
-            return None
-        tosend = result['data']        
+
+        # Remplace par un index TTL
+        #if result and  await self.__is_expired(result):
+        #    ttl = result.get('path')
+        #    await self.remove(ttl)
+        #    return None
+        tosend = result['data']
         return tosend
 
 
-    async def remove(self, path):
-        connection, db, storage = self.__conn__()
-        if self.is_auto_webp:
-            try:
-                storage.remove({'path': path, "content-type": "webp"})
-            except:
-                pass
-        else:
-            try:
-                storage.remove({'path': path, "content-type": "default"})
-            except:
-                pass
+#    async def remove(self, path):
+#        db, storage = self.__conn__()
+#        if self.is_auto_webp:
+#            try:
+#                db.storage.remove({'path': path, "content-type": "webp"})
+#            except:
+#                pass
+#        else:
+#            try:
+#                db.storage.remove({'path': path, "content-type": "default"})
+#            except:
+#                pass
 
 
-    async def __is_expired(self, result):
-        timediff = datetime.utcnow() - result.get('created_at')
-        return timediff > timedelta(seconds=self.context.config.RESULT_STORAGE_EXPIRATION_SECONDS)
-        '''future => db.log_events.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 3600 } )
-        db.runCommand( { collMod: <collection or view>, <option1>: <value1>, <option2>: <value2> ... } )
-        {keyPattern: <index_spec> || name: <index_name>, expireAfterSeconds: <seconds> }
-        {getParameter:1, expireAfterSeconds: 1}
-        '''
+#    async def __is_expired(self, result):
+#        timediff = datetime.utcnow() - result.get('created_at')
+#        return timediff > timedelta(seconds=self.context.config.RESULT_STORAGE_EXPIRATION_SECONDS)
+#        '''future => db.log_events.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 3600 } )
+#        db.runCommand( { collMod: <collection or view>, <option1>: <value1>, <option2>: <value2> ... } )
+#        {keyPattern: <index_spec> || name: <index_name>, expireAfterSeconds: <seconds> }
+#        {getParameter:1, expireAfterSeconds: 1}
+#        '''

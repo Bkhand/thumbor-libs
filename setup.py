@@ -8,12 +8,12 @@ from distutils.core import setup
 
 setup(
     name = "thumbor_libs_blackhand",
-    version = "0.1.1",
+    version = "0.1.2",
     description = "libs thumbor",
     author = "Bertrand Thill",
     author_email = "github@blackhand.org",
     keywords = ["thumbor", "fallback", "images", "nfs", "mongodb"],
-    license = 'MIT',
+    license = 'GNU',
     url = 'https://github.com/Bkhand/thumbor_libs_blackhand',
     packages=[
         'thumbor_libs_blackhand',
