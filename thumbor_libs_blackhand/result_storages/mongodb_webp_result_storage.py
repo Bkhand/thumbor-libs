@@ -96,10 +96,6 @@ class Storage(BaseStorage):
         key = self.get_key_from_request()
         logger.debug("[RESULT_STORAGE] image not found at %s", key)
 
-        with open('/tmp/debug.txt', 'w') as f:
-            print(key, file=f)
-
-
 
         if self.is_auto_webp:
             result = db.storage.find_one({'path': key }) #, 'content-type': "webp"})
