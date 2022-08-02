@@ -13,7 +13,7 @@ setup(
     author = "Bertrand Thill",
     author_email = "github@blackhand.org",
     keywords = ["thumbor", "fallback", "images", "nfs", "mongodb"],
-    license = 'MIT',
+    license = 'GNU',
     url = 'https://github.com/Bkhand/thumbor_libs_blackhand',
     packages=[
         'thumbor_libs_blackhand',
