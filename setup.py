@@ -33,7 +33,7 @@ setup(
                    'Topic :: Multimedia :: Graphics :: Presentation'
     ],
     package_dir = {"thumbor_libs_blackhand": "thumbor_libs_blackhand"},
-    install_requires=['thumbor>=7.0.10','pymongo>=3.11.3'],
+    install_requires=['thumbor>=7.1.0','pymongo>=3.11.3'],
     long_description = """\
 This module test support for file.
 """

@@ -49,7 +49,6 @@ class Storage(BaseStorage):
         result_ttl = self.get_max_age()
         ref_img = ''
         ref_img = re.findall(r'/[a-zA-Z0-9]{24}(?:$|/)', key)
-        #coll = db.storage
         if ref_img:
             ref_img2 = ref_img[0].replace('/','')
         else:
@@ -96,43 +95,12 @@ class Storage(BaseStorage):
         key = self.get_key_from_request()
         logger.debug("[RESULT_STORAGE] image not found at %s", key)
 
-
-        if self.is_auto_webp:
-            result = db.storage.find_one({'path': key }) #, 'content-type': "webp"})
-        else:
-            result = db.storage.find_one({'path': key }) #, 'content-type': "default"})
+        #if self.is_auto_webp:
+        #    result = db.storage.find_one({'path': key }) #, 'content-type': "webp"})
+        #else:
+        result = db.storage.find_one({'path': key }) #, 'content-type': "default"})
 
         if not result:
             return None
-
-        # Remplace par un index TTL
-        #if result and  await self.__is_expired(result):
-        #    ttl = result.get('path')
-        #    await self.remove(ttl)
-        #    return None
         tosend = result['data']
         return tosend
-
-
-#    async def remove(self, path):
-#        db, storage = self.__conn__()
-#        if self.is_auto_webp:
-#            try:
-#                db.storage.remove({'path': path, "content-type": "webp"})
-#            except:
-#                pass
-#        else:
-#            try:
-#                db.storage.remove({'path': path, "content-type": "default"})
-#            except:
-#                pass
-
-
-#    async def __is_expired(self, result):
-#        timediff = datetime.utcnow() - result.get('created_at')
-#        return timediff > timedelta(seconds=self.context.config.RESULT_STORAGE_EXPIRATION_SECONDS)
-#        '''future => db.log_events.createIndex( { "createdAt": 1 }, { expireAfterSeconds: 3600 } )
-#        db.runCommand( { collMod: <collection or view>, <option1>: <value1>, <option2>: <value2> ... } )
-#        {keyPattern: <index_spec> || name: <index_name>, expireAfterSeconds: <seconds> }
-#        {getParameter:1, expireAfterSeconds: 1}
-#        '''
