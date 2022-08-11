@@ -24,10 +24,22 @@ class Storage(BaseStorage):
 
     def __conn__(self):
         #server_api = ServerApi('1', strict=True)
-        client = MongoClient(self.context.config.MONGO_RESULT_STORAGE_URI) #, server_api=server_api)
+        #client = MongoClient(self.context.config.MONGO_RESULT_STORAGE_URI) #, server_api=server_api)
+        #db = client[self.context.config.MONGO_RESULT_STORAGE_SERVER_DB]
+        #storage = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
+        #return db, storage
+
+        password = urllib.parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_PASSWORD)
+        user = urllib.parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_USER)
+        if not self.context.config.MONGO_RESULT_STORAGE_SERVER_REPLICASET:
+          uri = 'mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_RESULT_STORAGE_SERVER_HOST + '/?authSource=' + self.context.config.MONGO_RESULT_STORAGE_SERVER_DB
+        else:
+          uri = 'mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_RESULT_STORAGE_SERVER_HOST + '/?authSource=' + self.context.config.MONGO_RESULT_STORAGE_SERVER_DB + "&replicaSet=" + self.context.config.MONGO_RESULT_STORAGE_SERVER_REPLICASET + "&readPreference=" + self.context.config.MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE
+        client = MongoClient(uri)
         db = client[self.context.config.MONGO_RESULT_STORAGE_SERVER_DB]
-        storage = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
+        storage = db[self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION]
         return db, storage
+
 
 
     def get_max_age(self):
