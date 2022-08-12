@@ -5,16 +5,15 @@
 # https://fsf.org/
 
 from thumbor.loaders import http_loader
-from thumbor_ftvnum_libs.loaders import pic_nn_loader
-from tornado.concurrent import return_future
+from thumbor_libs_blackhand.loaders import pic_nn_loader
 import re
 import urllib.parse
 
-def load(context, path, callback):
+async def load(context, path):
     testurl=urllib.parse.unquote(path)
 
     if re.search('^http[s]?://', testurl):
-      http_loader.load(context, path, callback)
+      return await http_loader.load(context, path)
     else:
-      pic_nn_loader.load(context, path, callback)
+      return await pic_nn_loader.load(context, path)
 
