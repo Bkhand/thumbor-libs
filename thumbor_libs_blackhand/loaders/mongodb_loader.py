@@ -10,11 +10,23 @@ from bson.objectid import ObjectId
 from thumbor.loaders import LoaderResult
 import gridfs
 import urllib.request, urllib.parse, urllib.error
-#from thumbor.utils import logger
+
 
 def __conn__(self):
     #server_api_mode = ServerApi('1', strict=True)
-    client = MongoClient(self.config.MONGO_ORIGIN_URI)  #,server_api=server_api_mode)
+    #client = MongoClient(self.config.MONGO_ORIGIN_URI)  #,server_api=server_api_mode)
+    #db = client[self.config.MONGO_ORIGIN_SERVER_DB]
+    #storage = self.config.MONGO_ORIGIN_SERVER_COLLECTION
+    #return db, storage
+
+
+    if urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_USER):
+        password = urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_PASSWORD)
+        user = urllib.parse.quote_plus(self.config.MONGO_ORIGIN_SERVER_USER)
+        uri = 'mongodb://'+ user +':' + password + '@' + self.config.MONGO_ORIGIN_SERVER_HOST + '/?authSource=' + self.config.MONGO_ORIGIN_SERVER_DB
+    else:
+        uri = 'mongodb://'+ self.config.MONGO_ORIGIN_SERVER_HOST
+    client = MongoClient(uri)  #,server_api=server_api_mode)
     db = client[self.config.MONGO_ORIGIN_SERVER_DB]
     storage = self.config.MONGO_ORIGIN_SERVER_COLLECTION
     return db, storage

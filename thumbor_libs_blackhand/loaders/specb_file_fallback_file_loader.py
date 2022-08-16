@@ -8,7 +8,6 @@ from os import fstat
 from datetime import datetime
 from os.path import join, exists, abspath
 from six.moves.urllib.parse import unquote
-from tornado.concurrent import return_future
 from thumbor.loaders import LoaderResult
 from thumbor.utils import logger
 
@@ -40,9 +39,9 @@ async def load(context, path):
         file_path_two = unquote(file_path_two)
 
     if exists(file_path):
-        with open(file_path, 'r') as f:
+        with open(file_path, 'rb') as f:
             stats = fstat(f.fileno())
-            
+
             if stats.st_size <= 4:
                 logger.warning(u"%s: cette image source est vide...", file_path)
                 result.successful = False
@@ -54,11 +53,11 @@ async def load(context, path):
                 result.metadata.update(
                     size=stats.st_size,
                     updated_at=datetime.utcfromtimestamp(stats.st_mtime))
-    
+
     elif exists(file_path_two):
-         with open(file_path_two, 'r') as f:
+         with open(file_path_two, 'rb') as f:
             stats = fstat(f.fileno())
-            
+
             if stats.st_size <= 4:
                 logger.warning(u"%s: cette image source est vide...", file_path_two)
                 result.successful = False
