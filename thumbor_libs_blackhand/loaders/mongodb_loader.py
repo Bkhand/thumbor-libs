@@ -32,8 +32,6 @@ def __conn__(self):
     return db, storage
 
 
-
-
 async def load(context, path):
     db, storage = __conn__(context)
     correctPath = path.split("/")

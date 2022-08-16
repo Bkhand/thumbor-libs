@@ -41,7 +41,6 @@ class Storage(BaseStorage):
         return db, storage
 
 
-
     def get_max_age(self):
         default_ttl = self.context.config.RESULT_STORAGE_EXPIRATION_SECONDS
         if self.context.request.max_age == 0:
