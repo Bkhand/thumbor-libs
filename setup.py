@@ -8,7 +8,7 @@ from distutils.core import setup
 
 setup(
     name = "thumbor_libs_blackhand",
-    version = "0.1.2",
+    version = "0.1.3",
     description = "libs thumbor",
     author = "Bertrand Thill",
     author_email = "github@blackhand.org",
