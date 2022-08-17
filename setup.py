@@ -25,7 +25,7 @@ setup(
     ],
     classifiers = ['Development Status :: 4 - Beta',
                    'Intended Audience :: Developers',
-                   'License :: OSI Approved :: GNU GENERAL PUBLIC LICENSE V3 (GPLV3)',
+                   'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
                    'Natural Language :: French',
                    'Operating System :: POSIX :: Linux',
                    'Programming Language :: Python :: 3.9',
