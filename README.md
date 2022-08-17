@@ -23,35 +23,35 @@ Test seulement.
 Environnement:
 ```
 Thumbor 7.0.x
-Python  > 3.7
+Python  3.9
 MongoDB 4.4 / 5
 ```
 
 # Loaders
 
-1. [pic_nn_loader] (#pic_nn_loader)
-2. [pic_nnoh_loader] (#pic_nnoh_loader)
-2. [mongodb_gridfs_loader] (#mongodb_gridfs_loader)
+1. [spec_http_fallback_file_loader] (#spec_http_fallback_file_loader)
+2. [specb_http_or_specb_loader] (#specb_http_or_specb_loader)
+2. [mongodb_loader] (#mongodb_loader)
 
-## pic_nn_loader
+## spec_http_fallback_file_loader
 
 Description: Loader de type file, avec un fallback sur un autre filesystem.
 
 Implementation: 
 ```
-LOADER = thumbor_libs_blackhand.loaders.pic_nn_loader
+LOADER = thumbor_libs_blackhand.loaders.spec_http_fallback_file_loader
 PIC_LOADER_ROOT_PATH = #root path for file
 PIC_LOADER_FALLBACK_PATH = #fallback path for file
 PIC_LOADER_MAX_SIZE = #max size in bytes default 16777216
 ```
 
-## pic_nnoh_loader
+## specb_http_or_specb_loader
 
-Description: Loader de type pic_nn_loader, avec un fallback sur du http/s http_loader.
+Description: Loader de type spec_http_fallback_file_loader, avec un fallback sur du http/s http_loader.
 
 Implementation: 
 ```
-LOADER = thumbor_libs_blackhand.loaders.pic_nnoh_loader
+LOADER = thumbor_libs_blackhand.loaders.specb_http_or_specb_loader
 PIC_LOADER_ROOT_PATH = #root path for file
 PIC_LOADER_FALLBACK_PATH = #fallback path for file
 PIC_LOADER_MAX_SIZE = #max size in bytes default 16777216
@@ -59,7 +59,7 @@ PIC_LOADER_MAX_SIZE = #max size in bytes default 16777216
 #Ajouter les options additionnelles du LOADER http_loader standard
 ```
 
-## mongodb_gridfs_loader
+## mongodb_loader
 
 Description: Loader pour MongoDB/Gridfs.
 
@@ -187,12 +187,3 @@ URL_SIGNER = 'thumbor_libs_blackhand.url_signers.base64_hmac_sha1_trim'
 
 # Metrics
 
-## prometheus_metrics
-
-Mise a disposition de metriques pour prometheus
-
-Implementation: 
-```
-METRICS = 'thumbor_libs_blackhand.metrics.prometheus_metrics'
-PROMETHEUS_SCRAPE_PORT = <numéro de port>
-```
