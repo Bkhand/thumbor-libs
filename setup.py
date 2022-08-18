@@ -8,7 +8,7 @@ from distutils.core import setup
 
 setup(
     name = "thumbor_libs_blackhand",
-    version = "0.1.3",
+    version = "0.1.4",
     description = "libs thumbor",
     author = "Bertrand Thill",
     author_email = "github@blackhand.org",
@@ -33,7 +33,7 @@ setup(
                    'Topic :: Multimedia :: Graphics :: Presentation'
     ],
     package_dir = {"thumbor_libs_blackhand": "thumbor_libs_blackhand"},
-    install_requires=['thumbor>=7.1.0','pymongo>=3.11.3'],
+    install_requires=['thumbor>=7.1.0','pymongo>=4.2.0'],
     long_description = """\
 This module enable mongodb support and fallback for thumbor.
 """
