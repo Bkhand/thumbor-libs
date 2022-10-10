@@ -37,7 +37,7 @@ class Storage(BaseStorage):
           uri = 'mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_RESULT_STORAGE_SERVER_HOST + '/?authSource=' + self.context.config.MONGO_RESULT_STORAGE_SERVER_DB + "&replicaSet=" + self.context.config.MONGO_RESULT_STORAGE_SERVER_REPLICASET + "&readPreference=" + self.context.config.MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE
         client = MongoClient(uri)
         db = client[self.context.config.MONGO_RESULT_STORAGE_SERVER_DB]
-        storage = db[self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION]
+        storage = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
         return db, storage
 
 
@@ -89,16 +89,16 @@ class Storage(BaseStorage):
             logger.warning(u"OVERSIZE %s: %s > %s pas de mise en cache possible", key, amd, maxs)
             return None
         else:
-            db.storage.insert_one(doc_cpm)
+            db[storage]insert_one(doc_cpm)
             return key
 
-        if result_ttl > 0:
-                ref = datetime.utcnow() + timedelta(
-                    seconds=result_ttl
-                )
-                doc_cpm['expire'] = ref
-        db.storage.insert_one(doc_cpm)
-        return key
+        #if result_ttl > 0:
+        #        ref = datetime.utcnow() + timedelta(
+        #            seconds=result_ttl
+        #        )
+        #        doc_cpm['expire'] = ref
+        #db[storage]insert_one(doc_cpm)
+        #return key
 
 
     async def get(self):
@@ -109,7 +109,7 @@ class Storage(BaseStorage):
         #if self.is_auto_webp:
         #    result = db.storage.find_one({'path': key }) #, 'content-type': "webp"})
         #else:
-        result = db.storage.find_one({'path': key }) #, 'content-type': "default"})
+        result = db[storage]find_one({'path': key }) #, 'content-type': "default"})
 
         if not result:
             return None
