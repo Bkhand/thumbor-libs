@@ -22,7 +22,7 @@ Test seulement.
 
 Environnement:
 ```
-Thumbor 7.0.x
+Thumbor 7.1.x
 Python  3.9
 MongoDB 4.4 / 5
 ```
@@ -105,13 +105,13 @@ MONGO_STORAGE_COLLECTION = 'images' # MongoDB storage image collection
 
 # Result_storages
 
-## mongodb_webp_result_storage
+## mongodb_webp_result_storage / mongodb_legacy_result_storage, (LEGACY)
 
 Description: Mise en cache des images pour MongoDB compatible avec la fonction auto_webp. Attention l'expiration doit être gerée via un index TTL Mongo.
 
 Implementation: 
 ```
-STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_webp_result_storage'
+RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_webp_result_storage'
 MONGO_RESULT_STORAGE_DB = 'thumbor' # MongoDB storage server database name
 MONGO_RESULT_STORAGE_COLLECTION = 'images' # MongoDB storage image collection
 ```
@@ -121,6 +121,65 @@ Options:
 MONGO_RESULT_STORAGE_MAXCACHESIZE = 15900000 # Max size in Bytes for Binary in doc MongoDB, if 0 deactivated but limited at 16MB BSON
 ```
 
+## mongodb_result_storage
+
+Description: Mise en cache des images pour MongoDB compatible avec la fonction auto_webp. Attention l'expiration doit être gerée via un index TTL Mongo.
+
+Implementation: 
+```
+RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_result_storage'
+MONGO_RESULT_STORAGE_SERVER_AUTH = "auth base in mongodb"
+MONGO_RESULT_STORAGE_SERVER_COLLECTION = "collection to store image & metadata"
+MONGO_RESULT_STORAGE_SERVER_DB = "base mongodb"
+MONGO_RESULT_STORAGE_SERVER_HOSTS = "host1,host2 ..."
+MONGO_RESULT_STORAGE_SERVER_PASSWORD = "password"
+MONGO_RESULT_STORAGE_SERVER_PORT = "27017"
+MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE = "secondaryPreferred"
+MONGO_RESULT_STORAGE_SERVER_REPLICASET = "name of replicaset"
+MONGO_RESULT_STORAGE_SERVER_USER = "user"
+```
+
+## mongodb_result_storage
+
+Description: Mise en cache des images pour MongoDB compatible avec la fonction auto_webp. Attention l'expiration doit être gerée via un index TTL Mongo.
+
+Implementation: 
+```
+RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_result_storage'
+MONGO_RESULT_STORAGE_SERVER_AUTH = "auth base in mongodb"
+MONGO_RESULT_STORAGE_SERVER_COLLECTION = "collection to store image & metadata"
+MONGO_RESULT_STORAGE_SERVER_DB = "base mongodb"
+MONGO_RESULT_STORAGE_SERVER_HOSTS = "host1,host2 ..."
+MONGO_RESULT_STORAGE_SERVER_PASSWORD = "password"
+MONGO_RESULT_STORAGE_SERVER_PORT = "27017"
+MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE = "secondaryPreferred"
+MONGO_RESULT_STORAGE_SERVER_REPLICASET = "name of replicaset"
+MONGO_RESULT_STORAGE_SERVER_USER = "user"
+```
+
+## hybrid_result_storage
+
+Description: Mise en cache des images pour MongoDB (metadata) + disk (binaire) compatible avec la fonction auto_webp. Attention l'expiration doit être gerée via un index TTL Mongo - hors disque TODO.
+
+Implementation: 
+```
+RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_result_storage'
+MONGO_RESULT_STORAGE_SERVER_AUTH = "auth base in mongodb"
+MONGO_RESULT_STORAGE_SERVER_COLLECTION = "collection to store image & metadata"
+MONGO_RESULT_STORAGE_SERVER_DB = "base mongodb"
+MONGO_RESULT_STORAGE_SERVER_HOSTS = "host1,host2 ..."
+MONGO_RESULT_STORAGE_SERVER_PASSWORD = "password"
+MONGO_RESULT_STORAGE_SERVER_PORT = "27017"
+MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE = "secondaryPreferred"
+MONGO_RESULT_STORAGE_SERVER_REPLICASET = "name of replicaset"
+MONGO_RESULT_STORAGE_SERVER_USER = "user"
+CACHE_PATH = "path du storage du cache"
+```
+
+Options:
+```
+MONGO_STORE_METADATA = True
+```
 
 
 Note: avec utilisation de Varnish quelques modifs sont réaliser
