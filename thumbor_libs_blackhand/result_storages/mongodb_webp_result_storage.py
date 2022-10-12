@@ -2,17 +2,14 @@
 # Blackhand library for Thumbor
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/mit-license
-import bson
-import time
 import urllib.request, urllib.parse, urllib.error
 import re
 from datetime import datetime, timedelta
-from io import StringIO
+#from io import StringIO
 from thumbor.result_storages import BaseStorage
 from thumbor.utils import logger
 from bson.binary import Binary
 from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from sys import getsizeof
 
 
@@ -56,8 +53,8 @@ class Storage(BaseStorage):
     async def put(self, image_bytes):
         db, storage = self.__conn__()
         key = self.get_key_from_request()
-        max_age = self.get_max_age()
-        result_ttl = self.get_max_age()
+        #max_age = self.get_max_age()
+        #result_ttl = self.get_max_age()
         ref_img = ''
         ref_img = re.findall(r'/[a-zA-Z0-9]{24}(?:$|/)', key)
         if ref_img:

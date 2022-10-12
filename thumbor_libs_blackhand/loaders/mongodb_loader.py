@@ -4,7 +4,6 @@
 # http://www.opensource.org/licenses/mit-license
 
 from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 from thumbor.loaders import LoaderResult
 import gridfs
