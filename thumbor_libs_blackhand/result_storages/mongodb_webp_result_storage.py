@@ -12,7 +12,6 @@ from thumbor.result_storages import BaseStorage
 from thumbor.utils import logger
 from bson.binary import Binary
 from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from sys import getsizeof
 
 

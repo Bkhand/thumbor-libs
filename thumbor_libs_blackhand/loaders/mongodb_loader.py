@@ -5,7 +5,6 @@
 # https://fsf.org/
 
 from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 from thumbor.loaders import LoaderResult
 import gridfs
