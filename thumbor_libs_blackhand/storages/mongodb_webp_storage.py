@@ -4,9 +4,8 @@
 # http://www.opensource.org/licenses/mit-license
 import re
 import gridfs
-import urllib.request, urllib.parse, urllib.error
+#import urllib.request, urllib.parse, urllib.error
 from datetime import datetime, timedelta
-from io import StringIO
 from thumbor.storages import BaseStorage
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
