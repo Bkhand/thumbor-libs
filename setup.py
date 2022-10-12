@@ -1,14 +1,14 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
+# Blackhand library for Thumbor
+# Licensed under the MIT license:
+# http://www.opensource.org/licenses/mit-license
 
-# Licensed under the GNU/GPL license:
-# https://fsf.org/
 
 from distutils.core import setup
 
 setup(
     name = "thumbor_libs_blackhand",
-    version = "0.1.6",
+    version = "0.2.0",
     description = "libs thumbor",
     author = "Bertrand Thill",
     author_email = "github@blackhand.org",
@@ -17,6 +17,7 @@ setup(
     url = 'https://github.com/Bkhand/thumbor_libs_blackhand',
     packages=[
         'thumbor_libs_blackhand',
+        'thumbor_libs_blackhand.mongodb',
         'thumbor_libs_blackhand.loaders',
         'thumbor_libs_blackhand.url_signers',
         'thumbor_libs_blackhand.metrics',
@@ -25,7 +26,7 @@ setup(
     ],
     classifiers = ['Development Status :: 4 - Beta',
                    'Intended Audience :: Developers',
-                   'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+                   'License :: OSI Approved :: MIT License',
                    'Natural Language :: French',
                    'Operating System :: POSIX :: Linux',
                    'Programming Language :: Python :: 3.9',
