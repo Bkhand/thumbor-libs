@@ -139,23 +139,6 @@ MONGO_RESULT_STORAGE_SERVER_REPLICASET = "name of replicaset"
 MONGO_RESULT_STORAGE_SERVER_USER = "user"
 ```
 
-## mongodb_result_storage
-
-Description: Mise en cache des images pour MongoDB compatible avec la fonction auto_webp. Attention l'expiration doit être gerée via un index TTL Mongo.
-
-Implementation: 
-```
-RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_result_storage'
-MONGO_RESULT_STORAGE_SERVER_AUTH = "auth base in mongodb"
-MONGO_RESULT_STORAGE_SERVER_COLLECTION = "collection to store image & metadata"
-MONGO_RESULT_STORAGE_SERVER_DB = "base mongodb"
-MONGO_RESULT_STORAGE_SERVER_HOSTS = "host1,host2 ..."
-MONGO_RESULT_STORAGE_SERVER_PASSWORD = "password"
-MONGO_RESULT_STORAGE_SERVER_PORT = "27017"
-MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE = "secondaryPreferred"
-MONGO_RESULT_STORAGE_SERVER_REPLICASET = "name of replicaset"
-MONGO_RESULT_STORAGE_SERVER_USER = "user"
-```
 
 ## hybrid_result_storage
 
