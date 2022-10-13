@@ -89,13 +89,7 @@ class Storage(BaseStorage):
             db[storage].insert_one(doc_cpm)
             return key
 
-        #if result_ttl > 0:
-        #        ref = datetime.utcnow() + timedelta(
-        #            seconds=result_ttl
-        #        )
-        #        doc_cpm['expire'] = ref
-        #db[storage].insert_one(doc_cpm)
-        #return key
+  
 
 
     async def get(self):
@@ -103,9 +97,6 @@ class Storage(BaseStorage):
         key = self.get_key_from_request()
         logger.debug("[RESULT_STORAGE] image not found at %s", key)
 
-        #if self.is_auto_webp:
-        #    result = db.storage.find_one({'path': key }) #, 'content-type': "webp"})
-        #else:
         result = db[storage].find_one({'path': key }) #, 'content-type': "default"})
 
         if not result:
