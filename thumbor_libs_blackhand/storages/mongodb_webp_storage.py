@@ -91,9 +91,7 @@ class Storage(BaseStorage):
         stored = db.storage.find_one({'path': tpath})
         if not stored:
             return None
-        # if self.__is_expired(stored):
-            #self.remove(path)
-        #    return None
+
         fs = gridfs.GridFS(db)
         contents = fs.get(stored['file_id']).read()
         return bytes(contents)
