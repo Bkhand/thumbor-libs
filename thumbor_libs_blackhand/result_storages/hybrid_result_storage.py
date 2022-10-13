@@ -35,29 +35,30 @@ class Storage(BaseStorage):
 
         password = parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_PASSWORD)
         user = parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_USER)
+
         if not self.context.config.MONGO_RESULT_STORAGE_SERVER_REPLICASET:
-          uri = ('mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_RESULT_STORAGE_SERVER_HOSTS
+          uric = ('mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_RESULT_STORAGE_SERVER_HOSTS
                   + '/?authSource=' + self.context.config.MONGO_RESULT_STORAGE_SERVER_DB)
         else:
-          uri = ('mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_RESULT_STORAGE_SERVER_HOSTS
+          uric = ('mongodb://'+ user +':' + password + '@' + self.context.config.MONGO_RESULT_STORAGE_SERVER_HOSTS
                   + '/?authSource=' + self.context.config.MONGO_RESULT_STORAGE_SERVER_DB
                   + "&replicaSet=" + self.context.config.MONGO_RESULT_STORAGE_SERVER_REPLICASET
                   + "&readPreference=" + self.context.config.MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE)
 
         db_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_DB
         col_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
-        host = None
-        port = None
+        
         try:
             uri = self.context.config.MONGO_RESULT_STORAGE_URI
         except AttributeError:
-            pass
+            uri=uric
 
         try:
             host = self.context.config.MONGO_RESULT_STORAGE_SERVER_HOST
             port = self.context.config.MONGO_RESULT_STORAGE_SERVER_PORT
         except AttributeError:
-            pass
+            host=None
+            port=None
 
         mongo_conn = MongoConnector(
             db_name=db_name,
@@ -164,12 +165,6 @@ class Storage(BaseStorage):
 
         key = self.get_key_from_request()
         logger.debug("[RESULT_STORAGE] image not found at %s", key)
- 
-        try:
-            elf.context.config.get("MONGO_STORE_METADATA", False):
-        except AttributeError:
-            raise
-        
 
         age = datetime.utcnow() - timedelta(
             seconds=self.get_max_age()
