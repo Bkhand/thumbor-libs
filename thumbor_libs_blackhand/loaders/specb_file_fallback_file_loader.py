@@ -29,7 +29,6 @@ async def load(context, path):
           result.error = LoaderResult.ERROR_NOT_FOUND
           result.successful = False
           return result
-        pass
 
     if not exists(file_path):
         file_path = unquote(file_path)
