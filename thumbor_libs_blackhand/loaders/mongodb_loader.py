@@ -1,11 +1,9 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Blackhand library for Thumbor
-# Licensed under the GNU/GPL license:
-# https://fsf.org/
+# Licensed under the MIT license:
+# http://www.opensource.org/licenses/mit-license
 
 from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
 from bson.objectid import ObjectId
 from thumbor.loaders import LoaderResult
 import gridfs

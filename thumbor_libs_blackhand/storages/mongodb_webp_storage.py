@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 # Blackhand library for Thumbor
-# Licensed under the GNU/GPL license:
-# https://fsf.org/
+# Licensed under the MIT license:
+# http://www.opensource.org/licenses/mit-license
 import re
 import gridfs
-import urllib.request, urllib.parse, urllib.error
+#import urllib.request, urllib.parse, urllib.error
 from datetime import datetime, timedelta
-from io import StringIO
 from thumbor.storages import BaseStorage
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -61,9 +60,7 @@ class Storage(BaseStorage):
         return pasplit[0]
 
     def truepath(self, path):
-        pasplit = path.split("/")
-        # cas du // vide a gerer
-        pasplitf = re.search('^[a-z0-9A-Z]+', pasplit[0]).group(0)
+        pasplit = path.split("/")       
         if  pasplit[0]:
             pasplitf = re.search('^[a-z0-9A-Z]+', pasplit[0]).group(0)
             return  pasplitf
@@ -73,7 +70,6 @@ class Storage(BaseStorage):
     def get_crypto(self, path):
         db, storage = self.__conn__()
         tpath = self.truepath(path)
-        pasplit = path.split("/")
         crypto = db.storage.find_one({'path': tpath})
         if crypto:
             return crypto.get('crypto')
@@ -82,7 +78,6 @@ class Storage(BaseStorage):
 
     async def get_detector_data(self, path):
         db, storage = self.__conn__()
-        pasplit = path.split("/")
         tpath = self.truepath(path)
         doc = db.storage.find_one({'path': tpath})
         if doc:
