@@ -4,9 +4,9 @@
 # http://www.opensource.org/licenses/mit-license
 # libvips
 
-from  urllib import request, parse, error
-from motor.motor_tornado import MotorGridFSBucket
-from pymongo.errors import PyMongoError
+from  urllib import parse #, request; error
+#from motor.motor_tornado import MotorGridFSBucket
+#from pymongo.errors import PyMongoError
 from thumbor_libs_blackhand.mongodb.pool_result_storage import MongoConnector
 from datetime import datetime, timedelta
 from thumbor.result_storages import BaseStorage, ResultStorageResult
@@ -16,7 +16,7 @@ from bson.binary import Binary
 from uuid import uuid4
 import pytz
 import re
-import os
+#import os
 
 
 class Storage(BaseStorage):
@@ -46,8 +46,6 @@ class Storage(BaseStorage):
 
         db_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_DB
         col_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
-        password = parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_PASSWORD)
-        user = parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_USER)
         host = None
         port = None
         try:
@@ -108,10 +106,9 @@ class Storage(BaseStorage):
         return self.context.config.RESULT_STORAGE_EXPIRATION_SECONDS
 
     async def put(self, image_bytes):
-        #db, storage = self.__conn__()
         key = self.get_key_from_request()
-        max_age = self.get_max_age()
-        result_ttl = self.get_max_age()
+        #max_age = self.get_max_age()
+        #result_ttl = self.get_max_age()
         CACHE_PATH = self.context.config.CACHE_PATH
         mkpath = (CACHE_PATH + '/' + datetime.now().strftime('%Y') + '/' 
                   + datetime.now().strftime('%m') + '/' + datetime.now().strftime('%d') 
