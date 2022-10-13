@@ -3,9 +3,9 @@
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/mit-license
 
-from  urllib import request, parse, error
-from motor.motor_tornado import MotorGridFSBucket
-from pymongo.errors import PyMongoError
+from  urllib import parse #, request; error
+#from motor.motor_tornado import MotorGridFSBucket
+#from pymongo.errors import PyMongoError
 from thumbor_libs_blackhand.mongodb.pool_result_storage import MongoConnector
 from datetime import datetime, timedelta
 from thumbor.result_storages import BaseStorage, ResultStorageResult
@@ -43,8 +43,6 @@ class Storage(BaseStorage):
 
         db_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_DB
         col_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
-        password = parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_PASSWORD)
-        user = parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_USER)
         host = None
         port = None
         try:
@@ -101,10 +99,9 @@ class Storage(BaseStorage):
 
 
     async def put(self, image_bytes):
-        db, storage = self.__conn__()
         key = self.get_key_from_request()
         max_age = self.get_max_age()
-        result_ttl = self.get_max_age()
+        #result_ttl = self.get_max_age()
         ref_img = ''
         ref_img = re.findall(r'/[a-zA-Z0-9]{24}(?:$|/)', key)
         if ref_img:
