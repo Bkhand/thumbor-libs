@@ -24,7 +24,7 @@ class Storage(BaseStorage):
         super(Storage, self).__init__(context)
         self Storage_init(self)
     
-    def Storage_init(self)
+    def Storage_init(self):
         pass
 
 

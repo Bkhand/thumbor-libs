@@ -76,7 +76,7 @@ class Storage(BaseStorage):
         doc_cpm = dict(doc)
 
         try:
-            self.context.config.MONGO_RESULT_STORAGE_MAXCACHESIZE
+            #self.context.config.MONGO_RESULT_STORAGE_MAXCACHESIZE
             maxs = self.context.config.MONGO_RESULT_STORAGE_MAXCACHESIZE
         except:
             maxs = 16000000
