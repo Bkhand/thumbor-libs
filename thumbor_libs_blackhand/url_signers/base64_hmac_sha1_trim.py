@@ -6,7 +6,7 @@ import base64
 import hashlib
 import hmac
 from thumbor.url_signers import BaseUrlSigner
-from thumbor.utils import deprecated, logger
+#from thumbor.utils import deprecated, logger
 
 
 class UrlSigner(BaseUrlSigner):

@@ -109,7 +109,11 @@ class Storage(BaseStorage):
         key = self.get_key_from_request()
         #max_age = self.get_max_age()
         #result_ttl = self.get_max_age()
-        CACHE_PATH = self.context.config.CACHE_PATH
+        try:
+            CACHE_PATH = self.context.config.CACHE_PATH           
+        except AttributeError:
+            raise
+
         mkpath = (CACHE_PATH + '/' + datetime.now().strftime('%Y') + '/' 
                   + datetime.now().strftime('%m') + '/' + datetime.now().strftime('%d') 
                   + '/' + datetime.now().strftime('%H'))
@@ -144,9 +148,12 @@ class Storage(BaseStorage):
             }
         doc_cpm = dict(doc)
 
+
         fichier = open(endingpath, "wb")
-        fichier.write(Binary(image_bytes))
-        fichier.close()
+        try:
+            fichier.write(Binary(image_bytes))
+        finally:
+            fichier.close()
 
         await self.storage.insert_one(doc_cpm)
         #return self.context.request.url
@@ -159,9 +166,10 @@ class Storage(BaseStorage):
         logger.debug("[RESULT_STORAGE] image not found at %s", key)
  
         try:
-            cache_path = self.context.config.CACHE_PATH
+            elf.context.config.get("MONGO_STORE_METADATA", False):
         except AttributeError:
             raise
+        
 
         age = datetime.utcnow() - timedelta(
             seconds=self.get_max_age()
@@ -193,10 +201,12 @@ class Storage(BaseStorage):
         metadata['ContentLength'] = stored['content_length']
         metadata['ContentType'] = stored['content_type']
         cachefile = stored['cache_path'] + "/" + stored['cache_id']
-
+      
         fichier = open(cachefile, "rb")
-        tosend = fichier.read()
-        fichier.close()
+        try:
+            tosend = fichier.read()
+        finally:
+            fichier.close()
 
         return ResultStorageResult(
             buffer=tosend,

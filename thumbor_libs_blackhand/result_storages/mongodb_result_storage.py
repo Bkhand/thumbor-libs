@@ -100,7 +100,7 @@ class Storage(BaseStorage):
 
     async def put(self, image_bytes):
         key = self.get_key_from_request()
-        max_age = self.get_max_age()
+        #max_age = self.get_max_age()
         #result_ttl = self.get_max_age()
         ref_img = ''
         ref_img = re.findall(r'/[a-zA-Z0-9]{24}(?:$|/)', key)
