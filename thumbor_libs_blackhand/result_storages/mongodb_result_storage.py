@@ -22,10 +22,7 @@ class Storage(BaseStorage):
         BaseStorage.__init__(self, context)
         self.database, self.storage = self.__conn__()
         super(Storage, self).__init__(context)
-        self Storage_init(self)
-    
-    def Storage_init(self):
-        pass
+
 
 
     def __conn__(self):
