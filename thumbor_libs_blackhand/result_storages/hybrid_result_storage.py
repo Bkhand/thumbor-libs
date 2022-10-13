@@ -2,7 +2,7 @@
 # Blackhand library for Thumbor
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/mit-license
-
+# libvips
 
 from  urllib import request, parse, error
 from motor.motor_tornado import MotorGridFSBucket
@@ -48,7 +48,6 @@ class Storage(BaseStorage):
         col_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
         password = parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_PASSWORD)
         user = parse.quote_plus(self.context.config.MONGO_RESULT_STORAGE_SERVER_USER)
-        uri = uri
         host = None
         port = None
         try:
