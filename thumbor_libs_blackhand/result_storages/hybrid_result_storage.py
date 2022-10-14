@@ -47,7 +47,7 @@ class Storage(BaseStorage):
 
         db_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_DB
         col_name = self.context.config.MONGO_RESULT_STORAGE_SERVER_COLLECTION
-        
+
         try:
             uri = self.context.config.MONGO_RESULT_STORAGE_URI
         except AttributeError:
@@ -111,13 +111,13 @@ class Storage(BaseStorage):
         #max_age = self.get_max_age()
         #result_ttl = self.get_max_age()
         try:
-            CACHE_PATH = self.context.config.CACHE_PATH           
+            CACHE_PATH = self.context.config.CACHE_PATH
         except AttributeError:
             raise
-
-        mkpath = (CACHE_PATH + '/' + datetime.now().strftime('%Y') + '/' 
-                  + datetime.now().strftime('%m') + '/' + datetime.now().strftime('%d') 
+        imgpath = ( datetime.now().strftime('%Y') + '/'
+                  + datetime.now().strftime('%m') + '/' + datetime.now().strftime('%d')
                   + '/' + datetime.now().strftime('%H'))
+        mkpath = (CACHE_PATH + '/' + imgpath)
         self.ensure_dir(mkpath)
 
         #os.makedirs(mkpath)
@@ -144,7 +144,7 @@ class Storage(BaseStorage):
             'content_type': BaseEngine.get_mimetype(image_bytes),
             'ref_id': ref_img2,
             'content_length' : len(image_bytes),
-            'cache_path': mkpath,
+            'cache_path': imgpath,
             'cache_id' : cache_id
             }
         doc_cpm = dict(doc)
@@ -165,7 +165,10 @@ class Storage(BaseStorage):
 
         key = self.get_key_from_request()
         logger.debug("[RESULT_STORAGE] image not found at %s", key)
-
+        try:
+            CACHE_PATH = self.context.config.CACHE_PATH
+        except AttributeError:
+            raise
         age = datetime.utcnow() - timedelta(
             seconds=self.get_max_age()
         )
@@ -195,8 +198,8 @@ class Storage(BaseStorage):
         metadata['Cache-Control'] = "max-age=60,public"
         metadata['ContentLength'] = stored['content_length']
         metadata['ContentType'] = stored['content_type']
-        cachefile = stored['cache_path'] + "/" + stored['cache_id']
-      
+        cachefile = CACHE_PATH + '/' + stored['cache_path'] + "/" + stored['cache_id']
+
         fichier = open(cachefile, "rb")
         try:
             tosend = fichier.read()

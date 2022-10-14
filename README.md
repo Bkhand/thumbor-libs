@@ -90,7 +90,7 @@ if (req.http.Accept ~ "image/webp") {
 
 # storages
 
-## mongodb_webp_storage
+## mongodb_webp_storage (LEGACY)
 
 Description: Stockage des images pour MongoDB/GridFS compatible avec la fonction auto_webp.
 
@@ -105,15 +105,22 @@ MONGO_STORAGE_COLLECTION = 'images' # MongoDB storage image collection
 
 # Result_storages
 
-## mongodb_webp_result_storage / mongodb_legacy_result_storage, (LEGACY)
+## mongodb_webp_result_storage / mongodb_legacy_result_storage, (LEGACY DEPRECATED)
 
 Description: Mise en cache des images pour MongoDB compatible avec la fonction auto_webp. Attention l'expiration doit être gerée via un index TTL Mongo.
 
-Implementation: 
+Implementation:
 ```
-RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_webp_result_storage'
-MONGO_RESULT_STORAGE_DB = 'thumbor' # MongoDB storage server database name
-MONGO_RESULT_STORAGE_COLLECTION = 'images' # MongoDB storage image collection
+RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongodb_[webp|legacy]_result_storage'
+MONGO_RESULT_STORAGE_SERVER_AUTH = "auth base in mongodb"
+MONGO_RESULT_STORAGE_SERVER_COLLECTION = "collection to store image & metadata"
+MONGO_RESULT_STORAGE_SERVER_DB = "base mongodb"
+MONGO_RESULT_STORAGE_SERVER_HOST = "host1,host2 ..."
+MONGO_RESULT_STORAGE_SERVER_PASSWORD = "password"
+MONGO_RESULT_STORAGE_SERVER_PORT = "27017"
+MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE = "secondaryPreferred"
+MONGO_RESULT_STORAGE_SERVER_REPLICASET = "name of replicaset"
+MONGO_RESULT_STORAGE_SERVER_USER = "user"
 ```
 
 Options:
