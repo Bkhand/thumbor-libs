@@ -89,8 +89,6 @@ class Storage(BaseStorage):
             db[storage].insert_one(doc_cpm)
             return key
 
-  
-
 
     async def get(self):
         db, storage = self.__conn__()
@@ -101,8 +99,6 @@ class Storage(BaseStorage):
 
         if not result:
             return None
-
-
         filter={
             'path': key
         }
@@ -114,7 +110,6 @@ class Storage(BaseStorage):
         for doc in obj:
             logger.info("Deduplication %s", key)
             db[storage].delete_one({"_id": doc["_id"]})
-
 
         tosend = result['data']
         return tosend
