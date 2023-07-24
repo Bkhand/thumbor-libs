@@ -159,15 +159,24 @@ class Storage(BaseStorage):
         if not stored:
             return None
         
-        filter={
+        try:
+            #self.context.config.MONGO_RESULT_STORAGE_MAXCACHESIZE
+            dedup = self.context.config.MONGO_RESULT_STORAGE_DEDUP
+        except:
+            dedup = False
+        
+        if not dedup:
+          logger.debug("Deduplication OFF")  
+        else:
+          filter={
             'path': key
-        }
-        sort=list({
+          }
+          sort=list({
             'created_at': -1
-        }.items())
-        skip=1
-        obj = self.storage.find(filter=filter, skip=skip)
-        async for doc in obj:
+          }.items())
+          skip=1
+          obj = self.storage.find(filter=filter, skip=skip)
+          async for doc in obj:
             logger.info("Deduplication %s", key)
             self.storage.delete_one({"_id": doc["_id"]})
 
