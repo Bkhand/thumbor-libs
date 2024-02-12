@@ -105,13 +105,14 @@ MONGO_STORAGE_COLLECTION = 'images' # MongoDB storage image collection
 
 # Result_storages
 
-## mongodb_webp_result_storage / mongodb_legacy_result_storage, (LEGACY DEPRECATED)
+
+## mongodb_result_storage_V3 V4
 
 Description: Mise en cache des images pour MongoDB compatible avec la fonction auto_webp. Attention l'expiration doit être gerée via un index TTL Mongo.
 
-Implementation:
+Implementation: 
 ```
-RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongodb_[webp|legacy]_result_storage'
+RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_result_storage_v3/4'
 MONGO_RESULT_STORAGE_SERVER_AUTH = "auth base in mongodb"
 MONGO_RESULT_STORAGE_SERVER_COLLECTION = "collection to store image & metadata"
 MONGO_RESULT_STORAGE_SERVER_DB = "base mongodb"
@@ -123,27 +124,9 @@ MONGO_RESULT_STORAGE_SERVER_REPLICASET = "name of replicaset"
 MONGO_RESULT_STORAGE_SERVER_USER = "user"
 ```
 
-Options:
+V4 seulement:
 ```
-MONGO_RESULT_STORAGE_MAXCACHESIZE = 15900000 # Max size in Bytes for Binary in doc MongoDB, if 0 deactivated but limited at 16MB BSON
-```
-
-## mongodb_result_storage
-
-Description: Mise en cache des images pour MongoDB compatible avec la fonction auto_webp. Attention l'expiration doit être gerée via un index TTL Mongo.
-
-Implementation: 
-```
-RESULT_STORAGE = 'thumbor_libs_blackhand.result_storages.mongo_result_storage'
-MONGO_RESULT_STORAGE_SERVER_AUTH = "auth base in mongodb"
-MONGO_RESULT_STORAGE_SERVER_COLLECTION = "collection to store image & metadata"
-MONGO_RESULT_STORAGE_SERVER_DB = "base mongodb"
-MONGO_RESULT_STORAGE_SERVER_HOSTS = "host1,host2 ..."
-MONGO_RESULT_STORAGE_SERVER_PASSWORD = "password"
-MONGO_RESULT_STORAGE_SERVER_PORT = "27017"
-MONGO_RESULT_STORAGE_SERVER_READ_PREFERENCE = "secondaryPreferred"
-MONGO_RESULT_STORAGE_SERVER_REPLICASET = "name of replicaset"
-MONGO_RESULT_STORAGE_SERVER_USER = "user"
+PRODUIT = ['','']
 ```
 
 
