@@ -118,6 +118,18 @@ class Storage(BaseStorage):
         else:
             metadata = {}
 
+        try:
+            listeProduit = self.context.config.PRODUIT
+            produit=''
+            for s in listeProduit:
+                if key.find(s) >= 1:
+                    produit=s.replace('/', '')
+                    break
+                else:
+                    produit="info"
+        except AttributeError:
+            produit = 'undef'
+
         doc = {
             'path': key,
             'created_at': datetime.utcnow(),
@@ -125,7 +137,8 @@ class Storage(BaseStorage):
             'metadata': metadata,
             'content_type': BaseEngine.get_mimetype(image_bytes),
             'ref_id': ref_img2,
-            'content_length' : len(image_bytes)
+            'content_length' : len(image_bytes),
+            'produit': produit
             }
         doc_cpm = dict(doc)
 
@@ -158,6 +171,29 @@ class Storage(BaseStorage):
 
         if not stored:
             return None
+        
+        try:
+            #self.context.config.MONGO_RESULT_STORAGE_MAXCACHESIZE
+            dedup = self.context.config.MONGO_RESULT_STORAGE_DEDUP
+        except:
+            dedup = False
+        
+        if not dedup:
+          logger.debug("Deduplication OFF")  
+        else:
+          filter={
+            'path': key
+          }
+          sort=list({
+            'created_at': -1
+          }.items())
+          skip=1
+          obj = self.storage.find(filter=filter, skip=skip)
+          async for doc in obj:
+            logger.info("Deduplication %s", key)
+            self.storage.delete_one({"_id": doc["_id"]})
+
+
         metadata = stored['metadata']
         metadata['LastModified'] = stored['created_at'].replace(
             tzinfo=pytz.utc
