@@ -3,8 +3,9 @@
 # Licensed under the MIT license:
 # http://www.opensource.org/licenses/mit-license
 
+from setuptools import setup, find_packages
 
-from distutils.core import setup
+#from distutils.core import setup
 
 setup(
     name = "thumbor_libs_blackhand",
